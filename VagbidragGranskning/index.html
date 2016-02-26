@@ -1,0 +1,281 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Granskning av vägföreningar</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="57x57" href="icons/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="icons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="icons/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="icons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="icons/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="icons/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="icons/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="icons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="icons/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="icons/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="icons/manifest.json">
+    <link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-TileImage" content="icons/mstile-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/bootstrap.3.3.5.min.css" />
+    <link rel="stylesheet" href="css/bootstrap-theme.css" />
+
+    <style type="text/css">
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            padding-top: 50px;
+            padding-bottom: 20px;
+        }
+
+        .navbar-default .navbar-brand {
+            color: #fff;
+        }
+
+        .navbar-default .navbar-text {
+            color: #ffffff;
+        }
+
+        .navbar-default .navbar-nav > li > a {
+            color: #ffffff;
+        }
+    </style>
+
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <div class="container body-content">
+        <div class="jumbotron">
+            <h1>Vägbidrag</h1>
+        </div>
+
+        <script src="js/vagforeningar.js"></script>
+        <script>
+
+      var vf = '';
+
+      displayVagforeningar = (function () {
+          $("#granskning").modal('hide');
+          $("#ansokningar").html('');
+          $.each(Vagforeningar.ansokningar, function (ix, item) {
+              groupId = item.path.replace(/\./g,'_');
+              groupHTML = '<div class="panel panel-default" id="' + groupId + '">' +
+                  '<div class="panel-heading">' +
+                  '<h4 class="panel-title"><a data-toggle="collapse" data-parent="#ansokningar" href="#collapse_' + groupId + '">' +
+                  item.modified.substr(0, 10) + ': ' + item.vaghallare + '</a>' +
+                  ((item.nr == '') ? '<i class="indicator text-info glyphicon glyphicon-star-empty pull-right"></i>' : '') + 
+                  '</h4></div>' +
+                  '<div id="collapse_' + groupId + '" class="panel-collapse collapse">' +
+                  '<div class="panel-body">' +
+                  Vagforeningar.htmlOverview(item) +
+                  '<button style="margin-top: 5px" id="' + groupId + '_open" type="button" class="btn btn-info btn-sm">Granska</button>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>';
+              $("#ansokningar").append(groupHTML)
+              $("#" + groupId + "_open").click(function () {
+                  review(item);
+              });
+          });
+      })
+
+      function review(item) {
+          $("#granskning .modal-header .modal-title").html(item.vaghallare);
+          $.each(item, function (key, elem) {
+              if ($("#granskning .modal-body #" + key + "_in").length) {
+                  $("#granskning .modal-body #" + key + "_in").html(elem);
+              }
+          });
+
+          $("#granskning .modal-body #documents_in").html("");
+          $.each(item.documents, function (key, elem) {
+              $("#granskning .modal-body #documents_in").append("<a href=\"api/PDF?path=" + encodeURIComponent(item.vaghallare.replace(/[:\\/]/g, '_')) + "&fileName=" + escape(elem) + "\" target=\"_blank\">" + key + "</a><br/>");
+          });
+
+          $("#granskning #button_approve").unbind('click');
+          $("#granskning #button_approve").click(function () {
+              Vagforeningar.approve(item, function () {
+                  var groupId = item.path.replace(/\./g, '_');
+                  $("#ansokningar #" + groupId).remove();
+                  $("#granskning").modal('hide');
+              });
+          });
+          $("#granskning #button_deny").unbind('click');
+          $("#granskning #button_deny").click(function () {
+              Vagforeningar.deny(item, function () {
+                  var groupId = item.path.replace(/\./g, '_');
+                  $("#ansokningar #" + groupId).remove();
+                  $("#granskning").modal('hide');
+              });
+          });
+
+          $(".taint span").removeClass();
+          if (item.nr != null && item.nr != "") {
+              Vagforeningar.current(item.nr, setCurrentData);
+          }
+
+          $("#granskning").modal('show');
+      }
+
+      
+      setCurrentData = (function (item) {
+          $.each(item, function (key, elem) {
+              if ($("#granskning .modal-body #" + key + "_in").length) {
+                  if ($("#granskning .modal-body #" + key + "_in").html().replace(/\s/g, "").toUpperCase() != elem.replace(/\s/g, "").toUpperCase()) {
+                      $("#granskning .modal-body #" + key + "_status span").addClass("glyphicon glyphicon-flag text-danger");
+                      var hint = (elem != null && elem != "" ? elem : "(blankt)");
+                      $("#granskning .modal-body #" + key + "_status span").attr('title', hint);
+                  }
+              }
+          });
+//          if ($("#granskning .modal-body #ordforande_in").html() != item.ordforande) {
+//              $("#granskning .modal-body #ordforande_status span").addClass("glyphicon glyphicon-alert text-danger");
+//          }
+      });
+
+      $(document).ready(function () {
+      Vagforeningar.init(displayVagforeningar);
+    });
+        </script>
+
+        <div class="panel-group" id="ansokningar">
+
+        </div>
+        <hr />
+        <footer>
+            <p>&copy; 2016 - Kungsbacka Kommun</p>
+        </footer>
+    </div>
+
+    <!-- Granska -->
+    <div id="granskning" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <td>Dokument</td>
+                                <td colspan="2" id="documents_in"></td>
+                            </tr>
+                            <tr>
+                                <td>Namn</td>
+                                <td id="vaghallare_in"></td>
+                                <td id="vaghallare_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Orgnr</td>
+                                <td id="orgnr_in"></td>
+                                <td id="orgnr_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Bank-/Postgiro</td>
+                                <td id="bank__post_in"></td>
+                                <td id="bank__post_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Nr</td>
+                                <td id="nr_in"></td>
+                                <td id="nr_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Ordförande</td>
+                                <td id="ordforande_in"></td>
+                                <td id="ordforande_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Gatuadress</td>
+                                <td id="gatuadress_in"></td>
+                                <td id="gatuadress_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Postnummer</td>
+                                <td id="postnummer_in"></td>
+                                <td id="postnummer_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Postadress</td>
+                                <td id="postadress_in"></td>
+                                <td id="postadress_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Telefon</td>
+                                <td id="telefon_he_in"></td>
+                                <td id="telefon_he_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>E-post</td>
+                                <td id="ordf_epost_in"></td>
+                                <td id="ordf_epost_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Kassör</td>
+                                <td id="kassor_namn_in"></td>
+                                <td id="kassor_namn_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Kassör gatuadress</td>
+                                <td id="kassor_gatuadress_in"></td>
+                                <td id="kassor_gatuadress_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Kassör postnummer</td>
+                                <td id="kassor_postnummer_in"></td>
+                                <td id="kassor_postnummer_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Kassör postadress</td>
+                                <td id="kassor_ort_in"></td>
+                                <td id="kassor_ort_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Kassör telefon</td>
+                                <td id="kassor_telefon_in"></td>
+                                <td id="kassor_telefon_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Kassör e-post</td>
+                                <td id="kassor_epost_in"></td>
+                                <td id="kassor_epost_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Antal medlemmar</td>
+                                <td id="antal_medlemmar_in"></td>
+                                <td id="antal_medlemmar_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Antal permanentboende</td>
+                                <td id="antal_permanentboende_in"></td>
+                                <td id="antal_permanentboende_status" class="taint"><span></span></td>
+                            </tr>
+                            <tr>
+                                <td>Statligt vägnummer</td>
+                                <td id="statligt_vagnr_in"></td>
+                                <td id="statligt_vagnr_status" class="taint"><span></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="button_approve" class="btn btn-success">Godkänn</button>
+                    <button type="button" id="button_deny" class="btn btn-danger">Avböj</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Stäng</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
