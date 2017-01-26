@@ -1,0 +1,4 @@
+﻿<?xml version="1.0"?>
+<connectionStrings>
+  <add name="kbakarta" connectionString="Server=kbadatavm6.kba.local;User Id=***;Password=***;Database=***;Pooling=false" providerName="Npgsql" />
+</connectionStrings>

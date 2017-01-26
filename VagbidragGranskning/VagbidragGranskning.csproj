@@ -249,6 +249,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="icons\manifest.json" />
     <Content Include="ConnectionStrings.config" />
+    <Content Include="ConnectionStrings.config.example" />
     <None Include="Properties\PublishProfiles\Web051.pubxml" />
     <None Include="Properties\PublishProfiles\Web055.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
