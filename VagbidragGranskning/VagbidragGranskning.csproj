@@ -171,12 +171,15 @@
     <Compile Include="Controllers\ExcelController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PDFController.cs" />
+    <Compile Include="Controllers\RaindanceController.cs" />
     <Compile Include="Controllers\VagforeningController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ADHelper.cs" />
+    <Compile Include="Models\ReportQuery.cs" />
+    <Compile Include="Models\VagbidragAnsokan.cs" />
     <Compile Include="Models\VagbidragSQLPopulator.cs" />
     <Compile Include="Models\Vagforening.cs" />
     <Compile Include="Models\VFSQLPopulator.cs" />
@@ -221,7 +224,9 @@
     <Content Include="icons\mstile-310x150.png" />
     <Content Include="icons\mstile-310x310.png" />
     <Content Include="icons\mstile-70x70.png" />
-    <Content Include="icons\safari-pinned-tab.svg" />
+    <Content Include="icons\safari-pinned-tab.svg">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="index.html" />
     <Content Include="js\bootstrap.js" />
     <Content Include="js\bootstrap.min.js" />
@@ -255,7 +260,9 @@
     <Content Include="fonts\FontAwesome.otf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="icons\manifest.json" />
-    <Content Include="ConnectionStrings.config" />
+    <Content Include="ConnectionStrings.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ConnectionStrings.config.example" />
     <None Include="Properties\PublishProfiles\Web051.pubxml" />
     <None Include="Properties\PublishProfiles\Web055.pubxml" />

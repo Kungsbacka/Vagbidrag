@@ -47,10 +47,32 @@ namespace KBA.TE.Models
                 command.CommandText = "SELECT nr, vaghallare, bank_post, orgnr, total_vaglangd, statlig_vaglangd, statligt_bidrag, statligt_bidragsgrundande, vaglangd_gc FROM vagforeningar_rapport";
                 result.Load(command.ExecuteReader());
                 connection.Close();
-               
             }
             return result;
         }
+
+        public DataTable getRapportTable(int year)
+        {
+            DataTable result = new DataTable();
+
+            using (NpgsqlConnection connection = new NpgsqlConnection())
+            using (NpgsqlCommand command = new NpgsqlCommand())
+            {
+                connection.ConnectionString = ConfigurationManager.ConnectionStrings["kbakarta"].ConnectionString;
+                connection.Open();
+                command.Connection = connection;
+                //command.CommandText = "SELECT * FROM vagforeningar_rapport";
+                command.CommandText = "SELECT nr, vaghallare, bank_post, orgnr, total_vaglangd, statlig_vaglangd, statligt_bidrag, statligt_bidragsgrundande, vaglangd_gc FROM vagforeningar_rapport WHERE ar=@ar";
+                command.Parameters.AddWithValue("ar", year);
+                result.Load(command.ExecuteReader());
+                connection.Close();
+
+            }
+            return result;
+        }
+
+
+
         private Vagforening load(DataRow row)
         {
             Vagforening result = new Vagforening();

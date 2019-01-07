@@ -47,7 +47,7 @@ namespace KBA.TE.Models
                 conn.Open();
                 cmd.Connection = conn;
                 DataTable resultTable = new DataTable();
-                cmd.CommandText = "SELECT vf1.id, vf1.nr, '' orgnr, vf1.typ, vf1.vaghallare, vf1.ordforande, vf1.gatuadress, vf1.postadress, vf1.postnummer, vf1.telefon_he, vf1.telefon_mo, vf1.fd_k_nr, vf1.bank__post, vf1.fnr, vf1.\"löpnr\", vf1.belag, vf1.nr1, vf1.url, vf1.link, vf1.leverantors_id, vf1.bidragsberattigad_vaglangd, vf1.statligt_vagnr, vf1.ordf_epost, vf1.kassor_namn, vf1.kassor_gatuadress, vf1.kassor_postnummer, vf1.kassor_ort, vf1.kassor_telefon, vf1.kassor_epost, vf1.antal_medlemmar, vf1.antal_permanentboende, vf1.ga_beteckning, vf1.statligt_bidrag FROM vagforeningar vf1 WHERE nr = @nr AND vf1.typ NOT LIKE '%nskild GC'";
+                cmd.CommandText = "SELECT vf1.id, vf1.nr, orgnr, vf1.typ, vf1.vaghallare, vf1.ordforande, vf1.gatuadress, vf1.postadress, vf1.postnummer, vf1.telefon_he, vf1.telefon_mo, vf1.fd_k_nr, vf1.bank__post, vf1.fnr, vf1.\"löpnr\", vf1.belag, vf1.nr1, vf1.url, vf1.link, vf1.leverantors_id, vf1.bidragsberattigad_vaglangd, vf1.statligt_vagnr, vf1.ordf_epost, vf1.kassor_namn, vf1.kassor_gatuadress, vf1.kassor_postnummer, vf1.kassor_ort, vf1.kassor_telefon, vf1.kassor_epost, vf1.antal_medlemmar, vf1.antal_permanentboende, vf1.ga_beteckning, vf1.statligt_bidrag FROM vagforeningar vf1 WHERE nr = @nr AND vf1.typ NOT LIKE '%nskild GC'";
                 cmd.Parameters.AddWithValue("@nr", nr);
                 resultTable.Load(cmd.ExecuteReader());
                 conn.Close();

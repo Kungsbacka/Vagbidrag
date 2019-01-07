@@ -53,9 +53,31 @@
 </head>
 <body>
     <div class="container body-content">
-        <div class="jumbotron">
+
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Vägföreningar</a>
+                </div>
+                <!--div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Hem</a></li>
+                        <li><a href="#">Excel</a></li>
+                        <li><a href="#">Raindance</a></li>
+                    </ul>
+                </div--><!--/.nav-collapse -->
+            </div><!--/.container-fluid -->
+        </nav>
+
+        <!--div class="jumbotron">
             <h1>Vägbidrag</h1>
-        </div>
+        </div-->
 
         <script src="js/vagforeningar.js"></script>
         <script>
@@ -66,12 +88,13 @@
           $("#granskning").modal('hide');
           $("#ansokningar").html('');
           $.each(Vagforeningar.ansokningar, function (ix, item) {
-              groupId = item.path.replace(/\./g,'_');
+              groupId = item.path.replace(/\./g, '_');
+              console.log(item.vaghallare + " :" + typeof item.nr + ":")
               groupHTML = '<div class="panel panel-default" id="' + groupId + '">' +
                   '<div class="panel-heading">' +
                   '<h4 class="panel-title"><a data-toggle="collapse" data-parent="#ansokningar" href="#collapse_' + groupId + '">' +
                   item.modified.substr(0, 10) + ': ' + item.vaghallare + '</a>' +
-                  ((item.nr == '') ? '<i class="indicator text-info glyphicon glyphicon-star-empty pull-right"></i>' : '') + 
+                  ((!item.nr) ? '<i class="indicator text-info glyphicon glyphicon-star-empty pull-right"></i>' : '') + 
                   '</h4></div>' +
                   '<div id="collapse_' + groupId + '" class="panel-collapse collapse">' +
                   '<div class="panel-body">' +

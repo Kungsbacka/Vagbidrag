@@ -77,7 +77,15 @@ namespace KBA.TE.Models
             result.postnummer = xn.SelectSingleNode("/eformular/variabel[@namn='postnummer']")?.Value;
             result.telefon_he = xn.SelectSingleNode("/eformular/variabel[@namn='telefon_he']")?.Value;
             result.telefon_mo = xn.SelectSingleNode("/eformular/variabel[@namn='telefon_mo']")?.Value;
-            result.bank__post = xn.SelectSingleNode("/eformular/variabel[@namn='bank_post']")?.Value;
+            string bgpg = xn.SelectSingleNode("/eformular/variabel[@namn='rbBgPg']")?.Value;
+            if(bgpg == "pg")
+            {
+                result.bank__post = xn.SelectSingleNode("/eformular/variabel[@namn='plusgiro']")?.Value;
+            }
+            else
+            {
+                result.bank__post = xn.SelectSingleNode("/eformular/variabel[@namn='bankgiro']")?.Value;
+            }
             result.ordf_epost = xn.SelectSingleNode("/eformular/variabel[@namn='ordf_epost']")?.Value;
             result.kassor_namn = xn.SelectSingleNode("/eformular/variabel[@namn='kassor_namn']")?.Value;
             result.kassor_gatuadress = xn.SelectSingleNode("/eformular/variabel[@namn='kassor_gatuadress']")?.Value;
@@ -103,6 +111,10 @@ namespace KBA.TE.Models
             {
                 string fileName = f.SelectSingleNode("filnamn").Value;
                 string desc = f.SelectSingleNode("originalfilnamn").Value;
+                while(docs.ContainsKey(desc))
+                {
+                    desc = "_" + desc;
+                }
                 docs.Add(desc, fileName);
             }
             result.documents = docs;
