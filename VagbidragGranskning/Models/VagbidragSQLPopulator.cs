@@ -43,8 +43,8 @@ namespace KBA.TE.Models
                 connection.ConnectionString = ConfigurationManager.ConnectionStrings["kbakarta"].ConnectionString;
                 connection.Open();
                 command.Connection = connection;
-                //command.CommandText = "SELECT * FROM vagforeningar_rapport";
-                command.CommandText = "SELECT nr, vaghallare, bank_post, orgnr, total_vaglangd, statlig_vaglangd, statligt_bidrag, statligt_bidragsgrundande, vaglangd_gc FROM vagforeningar_rapport";
+                command.CommandText = "SELECT * FROM vagforeningar_rapport";
+                //command.CommandText = "SELECT nr, vaghallare, bank_post, orgnr, total_vaglangd, statlig_vaglangd, statligt_bidrag, statligt_bidragsgrundande, vaglangd_gc FROM vagforeningar_rapport";
                 result.Load(command.ExecuteReader());
                 connection.Close();
             }
