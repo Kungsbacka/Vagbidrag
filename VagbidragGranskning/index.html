@@ -94,7 +94,8 @@
                   '<div class="panel-heading">' +
                   '<h4 class="panel-title"><a data-toggle="collapse" data-parent="#ansokningar" href="#collapse_' + groupId + '">' +
                   item.modified.substr(0, 10) + ': ' + item.vaghallare + '</a>' +
-                  ((!item.nr) ? '<i class="indicator text-info glyphicon glyphicon-star-empty pull-right"></i>' : '') + 
+                  ((!item.nr) ? '<i class="indicator text-info glyphicon glyphicon-star-empty pull-right"></i>' : '') +
+                  (item.andrat_vagnat ? '<i class="indicator text-danger fa fa-exclamation-circle pull-right"></i>' : '') +
                   '</h4></div>' +
                   '<div id="collapse_' + groupId + '" class="panel-collapse collapse">' +
                   '<div class="panel-body">' +
@@ -115,6 +116,8 @@
           $.each(item, function (key, elem) {
               if ($("#granskning .modal-body #" + key + "_in").length) {
                   $("#granskning .modal-body #" + key + "_in").html(elem);
+              } else {
+                  console.log(key);
               }
           });
 

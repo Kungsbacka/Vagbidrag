@@ -105,6 +105,9 @@ namespace KBA.TE.Models
 
             result.path = path.Substring(path.LastIndexOf("\\") + 1);
 
+            if (xn.SelectSingleNode("/eformular/variabel[@namn='chkAndratVagnat']") != null)
+                result.andrat_vagnat = true;
+
             XPathNodeIterator files = xn.Select("/eformular/bifogadfil");
             Dictionary<string, string> docs = new Dictionary<string, string>();
             foreach (XPathNavigator f in files)

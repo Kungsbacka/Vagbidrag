@@ -98,6 +98,8 @@ namespace KBA.TE.Models
         [DataMember]
         public string uppgiftslamnare_telefon { get; set; }
         [DataMember]
+        public bool andrat_vagnat { get; set; } = false;
+        [DataMember]
         public IDictionary<string, string> documents { get; set; }
 
     }
